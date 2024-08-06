@@ -14,6 +14,7 @@ export const appUrls = {
     GET_ALL_PRINCIPALS: "/user/principals",
     GET_ALL_MERCHANTS: "/user/merchants",
     GET_ALL_SHOPPERS: "/user/shoppers",
-    ENABLE_DISABLE_USER: "/user/activate-deactivate"
+    ENABLE_DISABLE_USER: "/user/activate-deactivate",
+    CREATE_PRINCIPAL: "/user/principal/admin-register"
 
 };

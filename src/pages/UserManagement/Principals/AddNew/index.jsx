@@ -7,11 +7,24 @@ import { IoLocationOutline } from "react-icons/io5";
 import { HiOutlineMail } from 'react-icons/hi';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { CgSpinner } from 'react-icons/cg';
+
+import { api } from '../../../../services/api';
+import { appUrls } from '../../../../services/urls';
 
 import Upload from "../../../../assets/png/upload.png"
 
 const AddNewPrincipal = () => {
     const [userImage, setUserImage] = useState(null)
+    const [companyName, setCompanyName] = useState("")
+    const [contactPerson, setContactPerson] = useState("")
+    const [userEmail, setUserEmail] = useState("")
+    const [phone, setPhone] = useState()
+    const [address, setAddress] = useState("")
+    const [userState, setUserState] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [regNo, setRegNo] = useState()
+    const [companyDescription, setCompanyDescription] = useState("")
 
     const navigate = useNavigate()
     
@@ -19,6 +32,73 @@ const AddNewPrincipal = () => {
         const selectedFile = event.target.files[0];
         setUserImage(selectedFile)
     };
+
+    const handleCompanyName = (e) => {
+        setCompanyName(e.target.value)
+    }
+
+    const handleContactPerson = (e) => {
+        setContactPerson(e.target.value)
+    }
+
+    const handleEmail = (e) => {
+        setUserEmail(e.target.value)
+    }
+
+    const handlePhone = (e) => {
+        setPhone(e.target.value)
+    }
+
+    const handleAddress = (e) => {
+        setAddress(e.target.value)
+    }
+
+    const handleState = (e) => {
+        setUserState(e.target.value)
+    }
+
+    const handleRegNo = (e) => {
+        setRegNo(e.target.value)
+    }
+
+    const handleCompanyDescription = (e) => {
+        setCompanyDescription(e.target.value)
+    }
+
+    const submitForm = async () => {
+        setLoading(true)
+        const data = {
+            "name": contactPerson,
+            "email": userEmail,
+            "phone_number": `+234${phone}`,
+            "company_name": companyName,
+            "company_address": address,
+            "company_registration": regNo,
+            "company_description": companyDescription,
+            // "industry_category":"FMCG",
+            // "tin":"4456464"
+        }
+
+        await api.post(appUrls?.CREATE_PRINCIPAL, data)
+        .then((res) => {
+            console.log(res, "ressgo")
+            setLoading(false)
+            toast(`${res?.data?.message}`, { 
+                position: "top-right",
+                autoClose: 3500,
+                closeOnClick: true,
+            });
+        })
+        .catch((err) => {
+            console.log(err, "errgo")
+            setLoading(false)
+            toast(`${err?.data?.message}`, { 
+                position: "top-right",
+                autoClose: 3500,
+                closeOnClick: true,
+            });
+        })
+    }
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -38,9 +118,16 @@ const AddNewPrincipal = () => {
                     <IoIosClose className='w-5 h-5 text-[#2B3674] ' />
                     <p className='text-[#2B3674] font-barlow font-medium'>Cancel</p>
                 </button>
-                <button onClick={() => {}} className={`w-[158px] h-[48px] rounded-lg bg-[#2B3674]  flex items-center justify-between p-4`}>
-                    <BsPlus className='w-5 h-5 text-[#fff] ' />
-                    <p className='text-[#FFF] font-barlow font-medium'>Save Principal</p>
+                <button onClick={() => submitForm()} className={`w-[158px] h-[48px] rounded-lg bg-[#2B3674]  flex items-center justify-center p-4`}>
+                    {
+                        loading ?
+                        <CgSpinner className='animate-spin text-[#fff]' />
+                        :
+                        <div className='flex items-center justify-between'>
+                            <BsPlus className='w-5 h-5 text-[#fff] ' />
+                            <p className='text-[#FFF] font-barlow font-medium'>Save Principal</p>
+                        </div>
+                    }
                 </button>
             </div>
         </div>
@@ -54,6 +141,8 @@ const AddNewPrincipal = () => {
                         name='companyName'
                         placeholder='Enter Company Name'
                         type='text'
+                        value={companyName}
+                        onChange={(e) => handleCompanyName(e)}
                         className='w-full rounded-lg border outline-none border-[#D0D5DD] h-[48px] p-4'
                     />
                 </div>
@@ -61,9 +150,11 @@ const AddNewPrincipal = () => {
                 <div className='flex flex-col gap-1.5'>
                     <label htmlFor='Contact Person' className='font-barlow font-medium text-[#475367]'>Contact Person</label>
                     <input 
-                        name='companyName'
-                        placeholder='Enter Company Name'
+                        name='contactPerson'
+                        placeholder='Enter Contact Person'
                         type='text'
+                        value={contactPerson}
+                        onChange={(e) => handleContactPerson(e)}
                         className='w-full rounded-lg border outline-none border-[#D0D5DD] h-[48px] p-4'
                     />
                 </div>
@@ -76,7 +167,9 @@ const AddNewPrincipal = () => {
                                 name='email'
                                 placeholder='Enter Email'
                                 type='email'
+                                value={userEmail}
                                 className='outline-none'
+                                onChange={(e) => handleEmail(e)}
                             />
                             <HiOutlineMail className='w-5 h-5 text-[#667185]' />
                         </div>
@@ -89,7 +182,9 @@ const AddNewPrincipal = () => {
                                 name='PhoneNumber'
                                 placeholder='+234 000 000'
                                 type='number'
+                                value={phone}
                                 className='outline-none'
+                                onChange={(e) => handlePhone(e)}
                             />
                             <FiPhone className='w-5 h-5 text-[#667185]' />
                         </div>
@@ -104,7 +199,9 @@ const AddNewPrincipal = () => {
                             name='address'
                             placeholder='Enter Address'
                             type='text'
+                            value={address}
                             className='outline-none'
+                            onChange={(e) => handleAddress(e)}
                         />
                         <IoLocationOutline className='w-5 h-5 text-[#667185]' />
                     </div>
@@ -121,6 +218,29 @@ const AddNewPrincipal = () => {
                         />
                         <IoLocationOutline className='w-5 h-5 text-[#667185]' />
                     </div>
+                </div>
+
+                <div className='flex flex-col gap-1.5'>
+                    <label htmlFor='Reg No' className='font-barlow font-medium text-[#475367]'>Company Reg No</label>
+                    <input 
+                        name='regNo'
+                        placeholder='Registration No'
+                        type='number'
+                        value={regNo}
+                        onChange={(e) => handleRegNo(e)}
+                        className='w-full rounded-lg border outline-none border-[#D0D5DD] h-[48px] p-4'
+                    />
+                </div>
+
+                <div className='flex flex-col gap-1.5'>
+                    <label htmlFor='Company Description' className='font-barlow font-medium text-[#475367]'>Company Description</label>
+                    <textarea 
+                        name='companyDescription'
+                        type='text'
+                        value={companyDescription}
+                        onChange={(e) => handleCompanyDescription(e)}
+                        className='w-full rounded-lg border outline-none border-[#D0D5DD] h-[100px] p-4'
+                    ></textarea>
                 </div>
 
             </div>
