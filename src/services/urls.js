@@ -5,7 +5,11 @@ export const appUrls = {
     //PRODUCT ENDPOINTS
     GET_PRODUCT_URL: "/product",
     DELETE_PRODUCT_URL: "/product/delete",
+
+    //CATEGORIES ENDPOINT
     GET_CATEGORIES_URL: "/category",
+    CREATE_CATEGORIES_URL: "/category",
+    UPDATE_CATEGORIES_IMAGE_URL: "/category/upload-image",
     DELETE_CATEGORY_URL: "/category/delete",
 
 
