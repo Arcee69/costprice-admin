@@ -19,6 +19,13 @@ export const appUrls = {
     GET_ALL_MERCHANTS: "/user/merchants",
     GET_ALL_SHOPPERS: "/user/shoppers",
     ENABLE_DISABLE_USER: "/user/activate-deactivate",
-    CREATE_PRINCIPAL: "/user/principal/admin-register"
+    CREATE_PRINCIPAL: "/user/principal/admin-register",
+
+    //FINANCIALS ENDPOINTS
+    GET_ALL_TRANSACTIONS: "/transactions",
+    GET_ALL_SUBSCRIPTIONS: "/subscription",
+
+    //ORDERS ENDPOINTS
+    GET_ALL_ORDERS: "/order"
 
 };

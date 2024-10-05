@@ -30,12 +30,44 @@ const terms = [
 const Transaction = () => {
     const [loading, setLoading] = useState(false)
     const [activeTab, setActiveTab] = useState("All")
-    const [allPrincipals, setAllPrincipals] = useState([])
+    const [allTransactions, setAllTransactions] = useState([])
     const [selected, setSelected] = useState(terms[0])
+    const [text, setText] = useState("")
+    const [totalAmount, setTotalAmount] = useState(0); 
 
     const handleChangeTab = (value) => {
-        setActiveTab(value)
-      }
+      setActiveTab(value)
+    }
+
+    const formatter = new Intl.NumberFormat('en-US');
+
+    const getAllTransactions = async () => {
+      setLoading(true);
+      await api
+        .get(appUrls?.GET_ALL_TRANSACTIONS)
+        .then((res) => {
+          setLoading(false);
+          const transactions = res?.data?.data?.transactions;
+          setAllTransactions(transactions);
+  
+          // Calculate the total amount
+          const total = transactions.reduce((sum, transaction) => {
+            return sum + parseInt(transaction.total_amount, 10);
+          }, 0);
+          setTotalAmount(total); // Update the total amount state
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err, "faro");
+        });
+    };
+  
+    useEffect(() => {
+      getAllTransactions()
+    }, [text])
+
+    
+  const filteredTransactions = allTransactions?.filter(item => item?.txn_id?.includes(text) || [])
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -68,7 +100,7 @@ const Transaction = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Total Transactions</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦31,500`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦${formatter.format(totalAmount)}`}</p>
           </div>
         </div>
 
@@ -78,7 +110,7 @@ const Transaction = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Total Revenue</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`300`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦${formatter.format(totalAmount)}`}</p>
           </div>
         </div>
 
@@ -88,7 +120,7 @@ const Transaction = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Pending Transactions</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`6421`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>0</p>
           </div>
         </div>
 
@@ -98,7 +130,7 @@ const Transaction = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Failed Transactions</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦24,500`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>0</p>
           </div>
         </div>
 
@@ -182,8 +214,10 @@ const Transaction = () => {
                 </Listbox>
                 <input 
                     type='text'
-                    placeholder='Search by Name'
+                    placeholder='Search by Transaction Id'
+                    value={text}
                     className='bg-transparent outline-none w-[560px] ml-2'
+                    onChange={(e) => setText(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>
@@ -197,10 +231,10 @@ const Transaction = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading}  />}
-        {activeTab === "Cancelled" && <Cancelled loading={loading} />}
-        {activeTab === "Pending" && <Pending loading={loading} />} 
-        {activeTab === "Successful" && <Successful loading={loading} />} 
+        {activeTab === "All" && <All loading={loading}  data={filteredTransactions} />}
+        {activeTab === "Cancelled" && <Cancelled loading={loading} data={filteredTransactions} />}
+        {activeTab === "Pending" && <Pending loading={loading} data={filteredTransactions} />} 
+        {activeTab === "Successful" && <Successful loading={loading} data={filteredTransactions} />} 
 
       </div>
 

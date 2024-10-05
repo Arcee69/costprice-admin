@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
-const OrderDetails = () => {
+const OrderDetails = ({ orderData }) => {
     const [openAddress, setOpenAddress] = useState(false);
 
     const handleOpenAddress = () => {
         setOpenAddress(prev => !prev)
     }
+
+    
+    const formatter = new Intl.NumberFormat('en-US');
+
   return (
     <div className='flex flex-col pt-[37px] gap-[23px]'>
         <div className='flex flex-col gap-[23px]'>
@@ -20,10 +24,10 @@ const OrderDetails = () => {
                 </div>
                 <hr />
                 <div className='flex items-center gap-[157px]'>
-                    <p className='font-barlow text-[#3F434A] text-sm'>Regina Cooper</p>
-                    <p className='font-barlow text-[#3F434A] text-sm'>example@mail.com</p>
-                    <p className='font-barlow text-[#3F434A] text-sm'>+1(070) 4567–8800</p>
-                    <p className='font-barlow text-[#3F434A] text-sm'>993 E. Brewer St. Holtsville, NY 11742</p>
+                    <p className='font-barlow text-[#3F434A] text-sm'>{orderData?.user?.name}</p>
+                    <p className='font-barlow text-[#3F434A] text-sm'>{orderData?.user?.email}</p>
+                    <p className='font-barlow text-[#3F434A] text-sm'>{orderData?.user?.phone_number}</p>
+                    <p className='font-barlow text-[#3F434A] text-sm'>{orderData?.address}</p>
                 </div>
 
             </div>
@@ -35,23 +39,23 @@ const OrderDetails = () => {
             <div className='flex flex-col gap-[22px]'>
                 <p className='text-[20px] font-barlow font-medium text-[#3F434A]'>Payment method</p>
                 <div className='flex items-center justify-between border border-[#E8E9EB] py-3 px-4 w-[205px] rounded-xl'>
-                    <p className='text-[#3F434A] font-barlow text-sm'>Credit Card</p>
+                    <p className='text-[#3F434A] font-barlow text-sm capitalize'>{orderData?.payment_option}</p>
                     <IoIosArrowDown className='text-[14x] text-[#E8E9EB]' />
                 </div>
                 <div className='flex flex-col gap-1'>
-                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Transaction ID: <span className='font-poppins font-normal text-sm'></span>000001-TXHQ</p>
-                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Amount: <span className='font-poppins font-normal text-sm'>$2.500</span> </p>
+                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Transaction ID: <span className='font-poppins font-normal text-sm'></span>{orderData?.txn_id}</p>
+                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Amount: <span className='font-poppins font-normal text-sm'>{`₦${formatter.format(orderData?.total_amount)}`}</span> </p>
                 </div>
             </div>
             <div className='flex flex-col gap-[22px]'>
                 <p className='text-[20px] font-barlow font-medium text-[#3F434A]'>Shipping method</p>
                 <div className='flex items-center justify-between border border-[#E8E9EB] py-3 px-4 w-[205px] rounded-xl'>
-                    <p className='text-[#3F434A] font-barlow text-sm'>Delivery</p>
+                    <p className='text-[#3F434A] font-barlow text-sm capitalize'>{orderData?.delivery_option}</p>
                     <IoIosArrowDown className='text-[14x] text-[#E8E9EB]' />
                 </div>
                 <div className='flex flex-col gap-1'>
                     <p className='font-medium text-[#3F434A] font-barlow text-sm'>Tracking Code: <span className='font-poppins font-normal text-sm'></span>Pending </p>
-                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Date: <span className='font-poppins font-normal text-sm'>Pending</span> </p>
+                    <p className='font-medium text-[#3F434A] font-barlow text-sm'>Date: <span className='font-poppins font-normal text-sm'>{new Date(orderData?.created_at).toLocaleDateString()}</span> </p>
                 </div>
             </div>
             <div className='w-[358px] bg-[#F8F8F8] rounded-lg flex flex-col gap-4 px-4 py-5'>

@@ -7,7 +7,7 @@ import LongMenu from "../../../../assets/svg/longmenu.svg"
 import Empty from "../../../../assets/png/empty.png"
 
 
-const All = () => {
+const All = ({ data }) => {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10)
@@ -15,81 +15,12 @@ const All = () => {
   
     const navigate = useNavigate()
 
-    const data = [
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-          
-            status: "Pending",
-            type: "Merchant",
-            plan: "Monthly"
-        },
-        {
-            id: "#0007366388",
-            customer: "Mariam Historia",
-            date: "2024-06-01",
-            amount: "₦654",
-      
-            status: "Completed",
-            type: "Merchant",
-            plan: "Monthly"
-        },
-        {
-            id: "#0007366388",
-            customer: "Jayejeje Damasus",
-            date: "2024-06-01",
-            amount: "₦654",
-        
-            status: "Cancelled",
-            type: "Principal",
-            plan: "Monthly"
-        },
-        {
-            id: "#0007366388",
-            customer: "Dunfix",
-            date: "2024-06-01",
-            amount: "₦654",
-        
-            status: "Completed",
-            type: "Shopper",
-            plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-    
-            status: "Completed",
-            type: "Merchant",
-            plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Shopper",
-            status: "Cancelled",
-            plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Shopper",
-            status: "Cancelled",
-            plan: "Monthly",
-        },
-    ]
+
 
      //Get Current data
   const endOffset = itemOffset + perPage;
   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
- //  const currentData = allProducts?.slice(itemOffset, endOffset);
+  const currentData = data?.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(data?.length / perPage);
 
 
@@ -137,7 +68,7 @@ const All = () => {
                   </th>
               </tr>
 
-              {data?.length > 0 ? data?.map((item, index) => (
+              {currentData?.length > 0 ? currentData?.map((item, index) => (
                   <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/subscription-details")}> {/* onClick={() => navigationCheck(data)} */}
                       <td className='h-[70px] px-4'>
                           <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`${item?.id?.substring(0, 8)}`}</p> 

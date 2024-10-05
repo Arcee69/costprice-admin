@@ -12,6 +12,8 @@ import All from './components/All';
 import Completed from './components/Completed';
 import Cancelled from './components/Cancelled';
 import Pending from './components/Pending';
+import { api } from '../../services/api';
+import { appUrls } from '../../services/urls';
 
 
 const terms = [
@@ -23,81 +25,45 @@ const terms = [
 const Orders = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("All")
-  const [allAdmins, setAllAdmins] = useState([])
+  const [allOrders, setAllOrders] = useState([])
   const [selected, setSelected] = useState(terms[0])
+  const [text, setText] = useState("")
 
   
   const handleChangeTab = (value) => {
     setActiveTab(value)
   }
 
+
+
+    const getAllOrders = async () => {
+      setLoading(true);
+      await api
+        .get(appUrls?.GET_ALL_ORDERS)
+        .then((res) => {
+          setLoading(false);
+          console.log(res, "sloik")
+          const orders = res?.data?.data?.orders;
+          setAllOrders(orders);
   
-  const allOrders = [
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Pending'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Completed'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Cancelled'
-    },
-    {
-      id: '#0007366388',
-      product: "Body care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Pending'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Completed'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Completed'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Completed'
-    },
-    {
-      id: '#0007366388',
-      product: "Hair care",
-      date: "2 min ago",
-      total: "₦654",
-      payment: "Card",
-      status: 'Completed'
-    },
-  ]
+          // // Calculate the total amount
+          // const total = transactions.reduce((sum, transaction) => {
+          //   return sum + parseInt(transaction.total_amount, 10);
+          // }, 0);
+          // setTotalAmount(total); // Update the total amount state
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err, "faro");
+        });
+    };
+  
+    useEffect(() => {
+      getAllOrders()
+    }, [text])
+
+    
+  const filteredOrders = allOrders?.filter(item => item?.txn_id?.includes(text) || [])
 
 
   return (
@@ -217,9 +183,9 @@ const Orders = () => {
         </div>
 
         {activeTab === "All" && <All loading={loading} allOrders={allOrders} />}
-        {activeTab === "Completed" && <Completed loading={loading} />}
-        {activeTab === "Cancelled" && <Cancelled loading={loading} />}
-        {activeTab === "Pending" && <Pending loading={loading} />}
+        {activeTab === "Completed" && <Completed loading={loading} allOrders={allOrders} />}
+        {activeTab === "Cancelled" && <Cancelled loading={loading} allOrders={allOrders} />}
+        {activeTab === "Pending" && <Pending loading={loading} allOrders={allOrders} />}
 
       </div>
       

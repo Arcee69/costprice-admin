@@ -7,7 +7,7 @@ import LongMenu from "../../../../assets/svg/longmenu.svg"
 import Empty from "../../../../assets/png/empty.png"
 
 
-const All = () => {
+const All = ({ data }) => {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10)
@@ -15,84 +15,87 @@ const All = () => {
   
     const navigate = useNavigate()
 
-    const data = [
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Subscription",
-            status: "Pending"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Mariam Historia",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Purchase",
-            status: "Completed"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Jayejeje Damasus",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Refund",
-            status: "Cancelled"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Dunfix",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Purchase",
-            status: "Completed"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Subscription",
-            status: "Completed"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Subscription",
-            status: "Cancelled"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-        {
-            id: "#0007366388",
-            customer: "Iya Sodiq",
-            date: "2024-06-01",
-            amount: "₦654",
-            type: "Subscription",
-            status: "Cancelled"
-            // type: "Merchant",
-            // plan: "Monthly",
-        },
-    ]
+    const formatter = new Intl.NumberFormat('en-US');
+
+    // const data = [
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Iya Sodiq",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Subscription",
+    //         status: "Pending"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Mariam Historia",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Purchase",
+    //         status: "Success"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Jayejeje Damasus",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Refund",
+    //         status: "Cancelled"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Dunfix",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Purchase",
+    //         status: "Success"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Iya Sodiq",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Subscription",
+    //         status: "Success"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Iya Sodiq",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Subscription",
+    //         status: "Cancelled"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    //     {
+    //         id: "#0007366388",
+    //         customer: "Iya Sodiq",
+    //         date: "2024-06-01",
+    //         amount: "₦654",
+    //         type: "Subscription",
+    //         status: "Cancelled"
+    //         // type: "Merchant",
+    //         // plan: "Monthly",
+    //     },
+    // ]
+
 
      //Get Current data
-  const endOffset = itemOffset + perPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
- //  const currentData = allProducts?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(data?.length / perPage);
+    const endOffset = itemOffset + perPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    const currentData = data?.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(data?.length / perPage);
 
 
   //Change Page 
@@ -136,27 +139,27 @@ const All = () => {
                   </th>
               </tr>
 
-              {data?.length > 0 ? data?.map((item, index) => (
-                  <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/transactions-details")}> {/* onClick={() => navigationCheck(data)} */}
+              {currentData?.length > 0 ? currentData?.map((item, index) => (
+                  <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/transactions-details", { state: item})}> {/* onClick={() => navigationCheck(data)} */}
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.id?.substring(0, 8)}`}</p> 
+                          <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.txn_id?.substring(0, 8)}`}</p> 
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.customer}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.user?.name}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.date}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{new Date(item?.created_at).toLocaleDateString()}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.amount}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{`₦${formatter.format(item?.total_amount)}`}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.type}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.transaction_type}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <div className={`rounded-lg h-8 flex justify-center items-center ${item?.status === 'Completed' && 'w-[99px]  bg-[#D1FFE3]'} ${item?.status === 'Pending' && ' w-[99px] bg-[#FFC60029]'} ${item?.status === 'Cancelled' && ' w-[99px] bg-[#FFF1F2]'}`}>
-                              <p className={`text-sm font-barlow text-left font-semibold ${item?.status === 'Completed' && 'text-[#0F973D]'} ${item?.status === 'Pending' && 'text-[#FFC600]'} ${item?.status === 'Cancelled' && 'text-[#F43F5E]'}`}>
-                                  {item?.status === "Completed" ? "Completed" : item?.status === "Pending" ? "Pending" : item?.status}
+                          <div className={`rounded-lg h-8 flex justify-center items-center ${item?.status === 'Success' && 'w-[99px]  bg-[#D1FFE3]'} ${item?.status === 'Pending' && ' w-[99px] bg-[#FFC60029]'} ${item?.status === 'Cancelled' && ' w-[99px] bg-[#FFF1F2]'}`}>
+                              <p className={`text-sm font-barlow text-left font-semibold ${item?.status === 'Success' && 'text-[#0F973D]'} ${item?.status === 'Pending' && 'text-[#FFC600]'} ${item?.status === 'Cancelled' && 'text-[#F43F5E]'}`}>
+                                  {item?.status === "Success" ? "Success" : item?.status === "Pending" ? "Pending" : item?.status}
                               </p>
                           </div>
                       </td>

@@ -2,31 +2,35 @@ import React from 'react'
 
 import Empty from "../../../../assets/png/empty.png"
 
-const Products = () => {
+const Products = ({orderData}) => {
 
-    const data = [
-        {
-            no: "#0007366388",
-            name: "Relaxer",
-            price: "654",
-            quantity: "2 Pieces",
-            total: "₦1308"
-        },
-        {
-            no: "#0007366388",
-            name: "Natures Gentle Touch Herbal Body Cream",
-            price: "654",
-            quantity: "3 cartons",
-            total: "₦1962"
-        },
-        {
-            no: "#0007366388",
-            name: "Natures Gentle Touch Herbal Body Cream",
-            price: "654",
-            quantity: "3 cartons",
-            total: "₦15000"
-        },
-    ]
+    const data = orderData?.order_items
+
+    // const data = [
+    //     {
+    //         no: "#0007366388",
+    //         name: "Relaxer",
+    //         price: "654",
+    //         quantity: "2 Pieces",
+    //         total: "₦1308"
+    //     },
+    //     {
+    //         no: "#0007366388",
+    //         name: "Natures Gentle Touch Herbal Body Cream",
+    //         price: "654",
+    //         quantity: "3 cartons",
+    //         total: "₦1962"
+    //     },
+    //     {
+    //         no: "#0007366388",
+    //         name: "Natures Gentle Touch Herbal Body Cream",
+    //         price: "654",
+    //         quantity: "3 cartons",
+    //         total: "₦15000"
+    //     },
+    // ]
+
+    const formatter = new Intl.NumberFormat('en-US');
 
   return (
     <div className='flex flex-col mt-[53px] pl-[30px] '>
@@ -54,19 +58,19 @@ const Products = () => {
                 {data?.length > 0 ? data?.map((item, index) => (
                     <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100'>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`${item?.no}`}</p> 
+                            <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`${item?.product_listing_id?.slice(0, 10)}`}</p> 
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.name}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.product_listing?.product?.name}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{`₦${item?.price}`}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{`₦${formatter.format(item?.product_listing?.price)}`}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.quantity}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{`${item?.quantity} Pieces`}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.total}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{`₦${formatter.format(item?.total)}`}</p>
                         </td>
                     </tr>
                 )) : (

@@ -31,12 +31,41 @@ const terms = [
 const Subscription = () => {
     const [loading, setLoading] = useState(false)
     const [activeTab, setActiveTab] = useState("All")
-    const [allPrincipals, setAllPrincipals] = useState([])
+    const [allSubscriptions, setAllSubscriptions] = useState([])
     const [selected, setSelected] = useState(terms[0])
+    const [text, setText] = useState("")
 
     const handleChangeTab = (value) => {
         setActiveTab(value)
       }
+
+      const getAllSubscriptions = async () => {
+        setLoading(true);
+        await api
+          .get(appUrls?.GET_ALL_SUBSCRIPTIONS)
+          .then((res) => {
+            setLoading(false);
+            const subscription = res?.data?.data?.subscriptions;
+            setAllSubscriptions(subscription);
+    
+            // // Calculate the total amount
+            // const total = transactions.reduce((sum, transaction) => {
+            //   return sum + parseInt(transaction.total_amount, 10);
+            // }, 0);
+            // setTotalAmount(total); // Update the total amount state
+          })
+          .catch((err) => {
+            setLoading(false);
+            console.log(err, "faro");
+          });
+      };
+    
+      useEffect(() => {
+        getAllSubscriptions()
+      }, [text])
+  
+      
+    const filteredSubscriptions = allSubscriptions?.filter(item => item?.txn_id?.includes(text) || [])
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -69,7 +98,7 @@ const Subscription = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Total Subscriptions</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦31,500`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`₦0`}</p>
           </div>
         </div>
 
@@ -79,7 +108,7 @@ const Subscription = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Total Revenue</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`300`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`0`}</p>
           </div>
         </div>
 
@@ -89,7 +118,7 @@ const Subscription = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Total Active Subscribers</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`6421`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`0`}</p>
           </div>
         </div>
 
@@ -99,7 +128,7 @@ const Subscription = () => {
           </div>
           <div className='flex flex-col gap-1.5'>
             <p className='text-[#A3AED0] font-inter'>Cancellation</p>
-            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`2`}</p>
+            <p className='text-[#2B3674] font-medium font-barlow text-[19px]'>{`0`}</p>
           </div>
         </div>
 
@@ -184,6 +213,8 @@ const Subscription = () => {
                 <input 
                     type='text'
                     placeholder='Search by Name'
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                     className='bg-transparent outline-none w-[560px] ml-2'
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
@@ -198,10 +229,10 @@ const Subscription = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading}  />}
-        {activeTab === "Active" && <Active loading={loading} />}
-        {activeTab === "Pending" && <Pending loading={loading} />} 
-        {activeTab === "Cancelled" && <Cancelled loading={loading} />} 
+        {activeTab === "All" && <All loading={loading}  data={filteredSubscriptions} />}
+        {activeTab === "Active" && <Active loading={loading} data={filteredSubscriptions} />}
+        {activeTab === "Pending" && <Pending loading={loading} data={filteredSubscriptions} />} 
+        {activeTab === "Cancelled" && <Cancelled loading={loading} data={filteredSubscriptions} />} 
 
       </div>
 

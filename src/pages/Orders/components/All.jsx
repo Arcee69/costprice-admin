@@ -13,10 +13,12 @@ const All = ({ allOrders, loading}) => {
 
   const navigate = useNavigate()
 
+  const formatter = new Intl.NumberFormat('en-US');
+
   //Get Current data
   const endOffset = itemOffset + perPage;
   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
- //  const currentData = allProducts?.slice(itemOffset, endOffset);
+  const currentData = allOrders?.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(allOrders?.length / perPage);
 
 
@@ -42,7 +44,7 @@ const All = ({ allOrders, loading}) => {
                         ORDER NO
                     </th>
                     <th className="font-medium font-barlow text-[#8B909A] px-4 text-[13px] uppercase text-left">
-                        PRODUCT
+                        ITEMS COUNT
                     </th>
                     <th className="font-medium font-barlow text-[#8B909A] px-4 text-[13px] uppercase text-left">
                         DATE
@@ -61,27 +63,27 @@ const All = ({ allOrders, loading}) => {
                     </th>
                 </tr>
 
-                {allOrders?.length > 0 ? allOrders?.map((item, index) => (
-                    <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/order-details")}> {/* onClick={() => navigationCheck(data)} */}
+                {currentData?.length > 0 ? currentData?.map((item, index) => (
+                    <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/order-details", { state: item})}> {/* onClick={() => navigationCheck(data)} */}
                         <td className='h-[70px] px-4'>
                             <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.id?.substring(0, 8)}`}</p> 
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.product}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.items_count}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.date}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{new Date(item?.created_at).toLocaleDateString()}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.total}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{`₦${formatter.format(item?.total_amount)}`}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.payment}</p>
+                            <p className='text-sm font-barlow text-dark-100 text-left'>{item?.payment_option}</p>
                         </td>
                         <td className='h-[70px] px-4'>
-                            <div className={`rounded-lg h-8 flex justify-center items-center ${item?.status === 'Completed' && 'w-[99px]  bg-[#D1FFE3]'} ${item?.status === 'Pending' && ' w-[99px] bg-[#FFC60029]'} ${item?.status === 'Cancelled' && ' w-[99px] bg-[#FFF1F2]'}`}>
-                                <p className={`text-sm font-barlow text-left font-semibold ${item?.status === 'Completed' && 'text-[#0F973D]'} ${item?.status === 'Pending' && 'text-[#FFC600]'} ${item?.status === 'Cancelled' && 'text-[#F43F5E]'}`}>
-                                    {item?.status === "Completed" ? "Completed" : item?.status === "Pending" ? "Pending" : item?.status}
+                            <div className={`rounded-lg h-8 flex justify-center items-center ${item?.status === 'Completed' && 'w-[99px]  bg-[#D1FFE3]'} ${item?.status === 'pending' && ' w-[99px] bg-[#FFC60029]'} ${item?.status === 'Cancelled' && ' w-[99px] bg-[#FFF1F2]'}`}>
+                                <p className={`text-sm font-barlow text-left font-semibold ${item?.status === 'Completed' && 'text-[#0F973D]'} ${item?.status === 'pending' && 'text-[#FFC600]'} ${item?.status === 'Cancelled' && 'text-[#F43F5E]'}`}>
+                                    {item?.status === "Completed" ? "Completed" : item?.status === "pending" ? "pending" : item?.status}
                                 </p>
                             </div>
                         </td>

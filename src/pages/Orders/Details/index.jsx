@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiHome } from 'react-icons/fi'
 import { HiOutlinePlusSm } from 'react-icons/hi'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
@@ -11,15 +11,49 @@ import Invoice from './components/Invoice';
 import ModalPop from '../../../components/modalPop';
 import ConfirmOrder from '../modal/ConfirmOrder';
 import CancelOrder from '../modal/CancelOrder';
+import { useLocation } from 'react-router-dom';
+import { api } from '../../../services/api';
+import { appUrls } from '../../../services/urls';
 
 const Details = () => {
     const [activeTab, setActiveTab] = useState("Order Details")
     const [openConfirmOrder, setOpenConfirmOrder] = useState(false)
     const [openCancelOrder, setOpenCancelOrder] = useState(false)
+    const [orderData, setOrderData] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const handleChangeTab = (value) => {
         setActiveTab(value)
     }
+
+    const location = useLocation()
+    const data = location.state
+
+    const getOrderById = async () => {
+      setLoading(true);
+      await api
+        .get(appUrls?.GET_ALL_ORDERS + `/${data?.id}`)
+        .then((res) => {
+          setLoading(false);
+          console.log(res, "slik")
+          const orders = res?.data?.data?.order;
+          setOrderData(orders);
+
+          // // Calculate the total amount
+          // const total = transactions.reduce((sum, transaction) => {
+          //   return sum + parseInt(transaction.total_amount, 10);
+          // }, 0);
+          // setTotalAmount(total); // Update the total amount state
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err, "faro");
+        });
+    };
+  
+    useEffect(() => {
+      getOrderById()
+    }, [])
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#FFF]'>
@@ -70,8 +104,8 @@ const Details = () => {
         </p>
       </div>
       <hr />
-      {activeTab === "Order Details" && <OrderDetails />}
-      {activeTab === "Products" && <Products />}
+      {activeTab === "Order Details" && <OrderDetails orderData={orderData} />}
+      {activeTab === "Products" && <Products orderData={orderData} />}
       {activeTab === "Invoice" && <Invoice />}
     
         <ModalPop isOpen={openConfirmOrder}>

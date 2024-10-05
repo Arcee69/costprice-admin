@@ -1,9 +1,19 @@
 import React from 'react'
 import { FiUploadCloud } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const TransactionDetails = () => {
+
+
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const data = location.state
+
+    const formatter = new Intl.NumberFormat('en-US');
+
+    console.log(data, 'available')
+
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
         <div className='flex justify-between mt-[28px]'>
@@ -34,24 +44,24 @@ const TransactionDetails = () => {
                 <p className='text-[#2B3674] font-barlow text-[24px] font-bold'>Basic Details</p>
                 <div className='flex flex-wrap gap-[85px]'>
                     <div className='gap-1 flex flex-col'>
-                        <p className='text-base text-[#5C6F7F] font-barlow font-bold'>ID</p>
-                        <p className='font-mont text-[#071827] text-sm'>#7474848438</p>
+                        <p className='text-base text-[#5C6F7F] font-barlow font-bold'>TXN ID</p>
+                        <p className='font-mont text-[#071827] text-sm'>{`#${data?.txn_id}`}</p>
                     </div>
                     <div className='gap-1 flex flex-col'>
                         <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Customer</p>
-                        <p className='font-mont text-[#071827] text-sm'>Bumble</p>
+                        <p className='font-mont text-[#071827] text-sm'>{data?.user?.name}</p>
                     </div>
                     <div className='gap-1 flex flex-col'>
-                        <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Merchant</p>
-                        <p className='font-mont text-[#071827] text-sm'>Platform cost</p>
+                        <p className='text-base text-[#5C6F7F] font-barlow font-bold'>User Type</p>
+                        <p className='font-mont text-[#071827] text-sm'>{data?.user?.type}</p>
                     </div>
                     <div className='gap-1 flex flex-col'>
                         <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Amount</p>
-                        <p className='font-mont text-[#071827] text-sm'>₦654</p>
+                        <p className='font-mont text-[#071827] text-sm'>{`₦${formatter.format(data?.total_amount)}`}</p>
                     </div>
                     <div className='gap-1 flex flex-col'>
                         <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Transaction Type</p>
-                        <p className='font-mont text-[#071827] text-sm'>Subscription</p>
+                        <p className='font-mont text-[#071827] text-sm capitalize'>{data?.transaction_type}</p>
                     </div>
                     <div className='gap-1 flex flex-col'>
                         <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Payment operator</p>
@@ -59,7 +69,7 @@ const TransactionDetails = () => {
                     </div>
                     <div className='gap-1 flex flex-col'>
                         <p className='text-base text-[#5C6F7F] font-barlow font-bold'>Date</p>
-                        <p className='font-mont text-[#071827] text-sm'>2024-06-01</p>
+                        <p className='font-mont text-[#071827] text-sm'>{new Date(data?.created_at).toLocaleDateString()}</p>
                     </div>
                 </div>
             </div>
