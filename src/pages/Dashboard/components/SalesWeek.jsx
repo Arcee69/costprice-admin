@@ -93,7 +93,7 @@ const SalesWeek = () => {
                     <div className='rounded-full w-[8px] h-[8px] bg-[#05CD99]'></div>
                     <p className='text-[#8A9099] font-poppins text-sm'>Current Week</p>
                 </div>
-                <p className='text-sm text-[#3F434A] font-poppins'>2.500</p>
+                <p className='text-sm text-[#3F434A] font-poppins'>{salesWeekData?.currentWeekSales || 0}</p>
             </div>
             <hr />
             <div className='flex items-center w-full justify-between'>
@@ -101,7 +101,7 @@ const SalesWeek = () => {
                     <div className='rounded-full w-[8px] h-[8px] bg-[#FFCC00]'></div>
                     <p className='text-[#8A9099] font-poppins text-sm'>Last Week</p>
                 </div>
-                <p className='text-sm text-[#3F434A] font-poppins'>1.500</p>
+                <p className='text-sm text-[#3F434A] font-poppins'>{salesWeekData?.pastWeekSales || 0}</p>
             </div>
         </div>
     </div>
