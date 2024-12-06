@@ -46,7 +46,7 @@ const Header = () => {
             />
 
         </div>
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4 cursor-pointer'>
             <img src={Notification} alt='notification' className='w-[40px] h-[40px]'/>
             <div 
                 className="w-[218px] h-[40px] flex justify-between items-center p-3"
