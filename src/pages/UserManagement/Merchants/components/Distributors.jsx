@@ -13,20 +13,19 @@ const Distributors = ({ allDistributors, loading}) => {
 
   const navigate = useNavigate()
 
-  //Get Current data
-  const endOffset = itemOffset + perPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
- //  const currentData = allProducts?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(allDistributors?.length / perPage);
+    //Get Current data
+    const endOffset = itemOffset + perPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
 
+    const currentData = allDistributors?.slice(itemOffset, endOffset) || [];
+    const pageCount = Math.ceil((allDistributors?.length || 0) / perPage);
 
-  //Change Page 
-  const handlePageClick = (event) => {
-      const newOffset = (event.selected * perPage) % allDistributors?.length;
-      console.log(
-        `User requested page number ${event.selected}, which is offset ${newOffset}`
-      );
-      setItemOffset(newOffset);
+    // Change Page
+    const handlePageClick = (event) => {
+    const newOffset = event.selected * perPage;
+    console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+    setItemOffset(newOffset);
+    setPage(event.selected); // Update the current page
     };
 
   return (
@@ -64,7 +63,7 @@ const Distributors = ({ allDistributors, loading}) => {
                     </th>
                 </tr>
 
-                {allDistributors?.length > 0 ? allDistributors?.map((item, index) => (
+                {currentData?.length > 0 ? currentData?.map((item, index) => (
                     <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/merchant-details", { state: item })}>
                         <td className='h-[70px] px-4'>
                             <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.id?.substring(0, 8)}`}</p> 
@@ -111,14 +110,14 @@ const Distributors = ({ allDistributors, loading}) => {
             </table>
             <div className=' mb-5 bg-[#fff]'>
                 <ReactPaginate
-                    breakLabel="..."
-                    nextLabel=">"
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={5}
-                    className='w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10'
-                    pageCount={pageCount}
-                    previousLabel="<"
-                    renderOnZeroPageCount={null}
+                        breakLabel="..."
+                        nextLabel=">"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={pageCount}
+                        previousLabel="<"
+                        className="w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10"
+                        activeClassName="font-bold"
                 />
             </div>
           </>

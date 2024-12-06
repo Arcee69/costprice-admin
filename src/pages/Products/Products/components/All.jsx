@@ -13,74 +13,21 @@ const All = ({ allProducts, loading }) => {
 
     const navigate = useNavigate()
 
-    const data = [
-        {
-            id: 1,
-            productNo: "#0007366388",
-            productName: "Relaxer",
-            category: "Hair Care",
-            price: "₦654",
-            brand: "Unilever",
-            dateCreated: "10th june 2020",
-            status: "Flagged"
-        },
-        {
-            id: 2,
-            productNo: "#0007366388",
-            productName: "Relaxer",
-            category: "Hair Care",
-            price: "₦654",
-            brand: "Unilever",
-            dateCreated: "10th june 2020",
-            status: "Active"
-        },
-        {
-            id: 3,
-            productNo: "#0007366388",
-            productName: "Relaxer",
-            category: "Hair Care",
-            price: "₦654",
-            brand: "Unilever",
-            dateCreated: "10th june 2020",
-            status: "Flagged"
-        },
-        {
-            id: 4,
-            productNo: "#0007366388",
-            productName: "Relaxer",
-            category: "Hair Care",
-            price: "₦654",
-            brand: "Unilever",
-            dateCreated: "10th june 2020",
-            status: "Disabled"
-        },
-        {
-            id: 5,
-            productNo: "#0007366388",
-            productName: "Relaxer",
-            category: "Hair Care",
-            price: "₦654",
-            brand: "Unilever",
-            dateCreated: "10th june 2020",
-            status: "Flagged"
-        },
-    ]
-
      //Get Current data
      const endOffset = itemOffset + perPage;
      console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-    //  const currentData = allProducts?.slice(itemOffset, endOffset);
-     const pageCount = Math.ceil(allProducts?.length / perPage);
- 
- 
-     //Change Page 
+   
+     const currentData = allProducts?.slice(itemOffset, endOffset) || [];
+     const pageCount = Math.ceil((allProducts?.length || 0) / perPage);
+   
+     // Change Page
      const handlePageClick = (event) => {
-         const newOffset = (event.selected * perPage) % allProducts?.length;
-         console.log(
-           `User requested page number ${event.selected}, which is offset ${newOffset}`
-         );
-         setItemOffset(newOffset);
-       };
+       const newOffset = event.selected * perPage;
+       console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+       setItemOffset(newOffset);
+       setPage(event.selected); // Update the current page
+     };
+   
 
 
 
@@ -119,7 +66,7 @@ const All = ({ allProducts, loading }) => {
                     </th>
                 </tr>
 
-                {allProducts?.length > 0 ? allProducts?.map((item, index) => (
+                {currentData?.length > 0 ? currentData?.map((item, index) => (
                     <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/product-details", { state: item })}> {/* onClick={() => navigationCheck(data)} */}
                         <td className='h-[70px] px-4'>
                             <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.id?.substring(0, 8)}`}</p> 
@@ -169,10 +116,10 @@ const All = ({ allProducts, loading }) => {
                     nextLabel=">"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={5}
-                    className='w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10'
                     pageCount={pageCount}
                     previousLabel="<"
-                    renderOnZeroPageCount={null}
+                    className="w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10"
+                    activeClassName="font-bold"
                 />
             </div>
             </>

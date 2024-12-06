@@ -121,10 +121,10 @@ const Sidebar = () => {
               )
             }
 
-            <div onClick={() => {navigate("/refund"), window.scrollTo(0, 0)}} className={`${location?.pathname === "/refund"  ? "bg-[#F4F6FB]" : ""} w-[222px] h-[48px]  gap-2 flex items-center group cursor-pointer rounded-l-3xl transition-all duration-300 p-[16px] hover:bg-[#F4F6FB]`}>
+            {/* <div onClick={() => {navigate("/refund"), window.scrollTo(0, 0)}} className={`${location?.pathname === "/refund"  ? "bg-[#F4F6FB]" : ""} w-[222px] h-[48px]  gap-2 flex items-center group cursor-pointer rounded-l-3xl transition-all duration-300 p-[16px] hover:bg-[#F4F6FB]`}>
               <BiChart className={`${location.pathname === "/refund" ? "text-[#2B3674]" : "text-[#fff]"} w-5 h-5  group-hover:text-[#50724D] `}/>
               <p className={`${location.pathname === "/refund" ? "text-[#2B3674]" : "text-[#fff]"}  group-hover:text-[#50724D] font-mont text-semibold `}>Refund</p>
-            </div>
+            </div> */}
             <div onClick={() => {navigate("/settings"), window.scrollTo(0, 0)}} className={`${location?.pathname === "/settings"  ? "bg-[#F4F6FB]" : ""} w-[222px] h-[48px]  gap-2 flex items-center group cursor-pointer rounded-l-3xl transition-all duration-300 p-[16px] hover:bg-[#F4F6FB]`}>
               <FiSettings className={`${location.pathname === "/settings" ? "text-[#2B3674]" : "text-[#fff]"} w-5 h-5  group-hover:text-[#50724D] `}/>
               <p className={`${location.pathname === "/settings" ? "text-[#2B3674]" : "text-[#fff]"}  group-hover:text-[#50724D] font-mont text-semibold `}>Settings</p>

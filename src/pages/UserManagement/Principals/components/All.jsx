@@ -8,26 +8,24 @@ import Empty from "../../../../assets/png/empty.png"
 
 const All = ({ allPrincipals, loading}) => {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10)
+  const [perPage] = useState(10)
   const [itemOffset, setItemOffset] = useState(0);
 
   const navigate = useNavigate()
 
-  //Get Current data
   const endOffset = itemOffset + perPage;
   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
- //  const currentData = allProducts?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(allPrincipals?.length / perPage);
 
+  const currentData = allPrincipals?.slice(itemOffset, endOffset) || [];
+  const pageCount = Math.ceil((allPrincipals?.length || 0) / perPage);
 
-  //Change Page 
+  // Change Page
   const handlePageClick = (event) => {
-      const newOffset = (event.selected * perPage) % allPrincipals?.length;
-      console.log(
-        `User requested page number ${event.selected}, which is offset ${newOffset}`
-      );
-      setItemOffset(newOffset);
-    };
+    const newOffset = event.selected * perPage;
+    console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+    setItemOffset(newOffset);
+    setPage(event.selected); // Update the current page
+  };
 
   return (
     <div className='py-4 px-0'>
@@ -61,7 +59,7 @@ const All = ({ allPrincipals, loading}) => {
                     </th>
                 </tr>
 
-                {allPrincipals?.length > 0 ? allPrincipals?.map((item, index) => (
+                {currentData?.length > 0 ? currentData?.map((item, index) => (
                     <tr key={index} className='bg-white h-[56px] border-t cursor-pointer border-grey-100' onClick={() => navigate("/principal-details", { state: item })}>
                         <td className='h-[70px] px-4'>
                             <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`#${item?.id?.substring(0, 8)}`}</p> 
@@ -109,10 +107,10 @@ const All = ({ allPrincipals, loading}) => {
                     nextLabel=">"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={5}
-                    className='w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10'
                     pageCount={pageCount}
                     previousLabel="<"
-                    renderOnZeroPageCount={null}
+                    className="w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10"
+                    activeClassName="font-bold"
                 />
             </div>
           </>

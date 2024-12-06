@@ -16,20 +16,19 @@ const All = ({ allOrders, loading}) => {
   const formatter = new Intl.NumberFormat('en-US');
 
   //Get Current data
-  const endOffset = itemOffset + perPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-  const currentData = allOrders?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(allOrders?.length / perPage);
-
-
-  //Change Page 
-  const handlePageClick = (event) => {
-      const newOffset = (event.selected * perPage) % allOrders?.length;
-      console.log(
-        `User requested page number ${event.selected}, which is offset ${newOffset}`
-      );
-      setItemOffset(newOffset);
-    };
+   const endOffset = itemOffset + perPage;
+   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+ 
+   const currentData = allOrders?.slice(itemOffset, endOffset) || [];
+   const pageCount = Math.ceil((allOrders?.length || 0) / perPage);
+ 
+   // Change Page
+   const handlePageClick = (event) => {
+     const newOffset = event.selected * perPage;
+     console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+     setItemOffset(newOffset);
+     setPage(event.selected); // Update the current page
+   };
 
   return (
     <div className='py-4 px-0'>
@@ -110,10 +109,10 @@ const All = ({ allOrders, loading}) => {
                     nextLabel=">"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={5}
-                    className='w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10'
                     pageCount={pageCount}
                     previousLabel="<"
-                    renderOnZeroPageCount={null}
+                    className="w-full flex gap-3 font-barlow text-dark-100 font-semibold justify-end py-2 pr-10"
+                    activeClassName="font-bold"
                 />
             </div>
           </>

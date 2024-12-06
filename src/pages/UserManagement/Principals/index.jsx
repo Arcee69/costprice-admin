@@ -31,6 +31,7 @@ const Principals = () => {
   const [activeTab, setActiveTab] = useState("All")
   const [allPrincipals, setAllPrincipals] = useState([])
   const [selected, setSelected] = useState(terms[0])
+  const [search, setSearch] = useState("")
 
   const navigate = useNavigate()
 
@@ -211,6 +212,8 @@ const Principals = () => {
                     type='text'
                     placeholder='Search by Name'
                     className='bg-transparent outline-none w-[560px] ml-2'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>
