@@ -3,6 +3,7 @@ import { FiHome } from 'react-icons/fi'
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { Listbox, Transition} from '@headlessui/react'
 import { IoIosArrowDown } from 'react-icons/io';
+import * as XLSX from "xlsx"
 
 import Upload from "../../../assets/svg/upload.svg"
 import SearchSmall from "../../../assets/svg/search_small.svg"
@@ -15,8 +16,9 @@ import { api } from '../../../services/api';
 
 
 const terms = [
-    { name: 'Name'},
-    { name: 'Category' },
+    { name: ''},
+    { name: 'Available' },
+    { name: 'Unavailable' },
   ]
 
 const Products = () => {
@@ -25,6 +27,7 @@ const Products = () => {
     const [loading, setLoading] = useState(false)
     const [allProducts, setAllProducts] = useState([])
     const [searchValue, setSearchValue] = useState("")
+
 
     const handleChangeTab = (tab) => {
         setActiveTab(tab)
@@ -56,6 +59,23 @@ const Products = () => {
         getAllProducts()
     }, [searchValue])
 
+    const filteredProducts = allProducts?.filter((item) => {
+        const matchesStatus = 
+            selected.name === "" || 
+            item.type === selected.name;
+        
+        return matchesStatus; 
+    })
+    
+      
+    const exportExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(allProducts); 
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+        XLSX.writeFile(workbook, `products_${Date.now()}.xlsx`);
+    };
+    
+
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
         <div className='flex items-center'>
@@ -69,6 +89,7 @@ const Products = () => {
             <p className='font-barlow text-[#2B3674] text-[24px] font-semibold'>Products</p>
             <button
                 className='w-auto p-2 h-[48px] bg-[#2B3674] flex items-center gap-[21px] rounded-lg'
+                onClick={exportExcel}
             >
                 <img src={Upload} alt='Upload' className='w-[18px] h-[15px]' />
                 <p className='text-[#fff] font-barlow font-medium'>Export</p>
@@ -109,7 +130,7 @@ const Products = () => {
                 <Listbox value={selected} onChange={setSelected}>
                     <div className="relative">
                         <Listbox.Button className="relative w-[145px] rounded-l-2xl cursor-default flex items-center gap-2 py-2 pl-3 pr-10 text-left outline-none sm:text-sm bg-[#E0E3F1]">
-                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name}</span>
+                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name || "Select"}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                 <IoIosArrowDown
                                     className="h-5 w-5 text-[#2B3674]"
@@ -170,7 +191,7 @@ const Products = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading} allProducts={allProducts} />}
+        {activeTab === "All" && <All loading={loading} allProducts={filteredProducts} />}
         {activeTab === "Active" && <Active  loading={loading}/>}
         {activeTab === "Flagged" && <Flagged loading={loading} />}
         {activeTab === "Disabled" && <Disabled loading={loading} />}

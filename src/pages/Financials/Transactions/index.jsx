@@ -5,6 +5,7 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import { Listbox, Transition } from '@headlessui/react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx'
 
 import { api } from '../../../services/api';
 import { appUrls } from '../../../services/urls';
@@ -23,8 +24,9 @@ import All from './component/All';
 
 
 const terms = [
-    { name: 'Name'},
-    { name: 'Category' },
+    { name: ''},
+    { name: 'order'},
+    { name: 'subscription' },
   ]
 
 const Transaction = () => {
@@ -32,7 +34,7 @@ const Transaction = () => {
     const [activeTab, setActiveTab] = useState("All")
     const [allTransactions, setAllTransactions] = useState([])
     const [selected, setSelected] = useState(terms[0])
-    const [text, setText] = useState("")
+    const [search, setSearch] = useState("")
     const [totalAmount, setTotalAmount] = useState(0); 
 
     const handleChangeTab = (value) => {
@@ -64,10 +66,25 @@ const Transaction = () => {
   
     useEffect(() => {
       getAllTransactions()
-    }, [text])
+    }, [search])
 
-    
-  const filteredTransactions = allTransactions?.filter(item => item?.txn_id?.includes(text) || [])
+    const filteredTransactions = allTransactions?.filter((item) => {
+      const matchesSearch = 
+      item.user.name.toLowerCase().includes(search.toLowerCase() || "")
+      
+      const matchesStatus = 
+          selected.name === "" || 
+          item.transaction_type === selected.name;
+      
+      return matchesSearch && matchesStatus;  
+    })
+  
+    const exportExcel = () => {
+      const worksheet = XLSX.utils.json_to_sheet(allTransactions); 
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Transactions');
+      XLSX.writeFile(workbook, `transactions_${Date.now()}.xlsx`);
+    };
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -84,6 +101,7 @@ const Transaction = () => {
         <div className='flex gap-4 items-center'>
           <button
             className='w-[120px] p-2 h-[48px] bg-[#2B3674] flex items-center gap-[21px] rounded-lg'
+            onClick={exportExcel}
           >
             <FiUploadCloud className='w-[18px] h-[15px] text-[#fff]' />
             <p className='text-[#fff] font-barlow font-medium'>Export</p>
@@ -170,7 +188,7 @@ const Transaction = () => {
                 <Listbox value={selected} onChange={setSelected}>
                     <div className="relative">
                         <Listbox.Button className="relative w-[145px] rounded-l-2xl cursor-default flex items-center gap-2 py-2 pl-3 pr-10 text-left outline-none sm:text-sm bg-[#E0E3F1]">
-                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name}</span>
+                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name || "Select"}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                 <IoIosArrowDown
                                     className="h-5 w-5 text-[#2B3674]"
@@ -214,10 +232,11 @@ const Transaction = () => {
                 </Listbox>
                 <input 
                     type='text'
-                    placeholder='Search by Transaction Id'
-                    value={text}
+                    name="search"
+                    placeholder='Search by Customer Name'
+                    value={search}
                     className='bg-transparent outline-none w-[560px] ml-2'
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>

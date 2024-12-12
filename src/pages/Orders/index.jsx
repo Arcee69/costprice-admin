@@ -4,6 +4,7 @@ import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { HiOutlinePlusSm } from "react-icons/hi";
 import { Listbox, Transition } from '@headlessui/react';
 import { IoIosArrowDown } from 'react-icons/io';
+import * as XLSX from "xlsx"
 
 import AdminIcon from "../../assets/svg/admin.svg"
 import CartIcon from "../../assets/svg/cart_green.svg"
@@ -17,8 +18,9 @@ import { appUrls } from '../../services/urls';
 
 
 const terms = [
-  { name: 'Name'},
-  { name: 'Category' },
+  { name: ''},
+  { name: 'pending'},
+  { name: 'completed' },
 ]
 
 
@@ -27,7 +29,7 @@ const Orders = () => {
   const [activeTab, setActiveTab] = useState("All")
   const [allOrders, setAllOrders] = useState([])
   const [selected, setSelected] = useState(terms[0])
-  const [text, setText] = useState("")
+  const [search, setSearch] = useState("")
 
   
   const handleChangeTab = (value) => {
@@ -60,10 +62,20 @@ const Orders = () => {
   
     useEffect(() => {
       getAllOrders()
-    }, [text])
+    }, [search])
 
+    const filteredOrders = allOrders?.filter((item) => {
+      const matchesSearch = 
+      item.txn_id.toLowerCase().includes(search.toLowerCase() || "")
+      
+      const matchesStatus = 
+          selected.name === "" || 
+          item.status === selected.name;
+      
+      return matchesSearch && matchesStatus;  //
+    })
     
-  const filteredOrders = allOrders?.filter(item => item?.txn_id?.includes(text) || [])
+  // const filteredOrders = allOrders?.filter(item => item?.txn_id?.includes(text) || [])
 
 
   return (
@@ -123,7 +135,7 @@ const Orders = () => {
                 <Listbox value={selected} onChange={setSelected}>
                     <div className="relative">
                         <Listbox.Button className="relative w-[145px] rounded-l-2xl cursor-default flex items-center gap-2 py-2 pl-3 pr-10 text-left outline-none sm:text-sm bg-[#E0E3F1]">
-                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name}</span>
+                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name || "Select" }</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                 <IoIosArrowDown
                                     className="h-5 w-5 text-[#2B3674]"
@@ -167,8 +179,11 @@ const Orders = () => {
                 </Listbox>
                 <input 
                     type='text'
+                    name='search'
                     placeholder='Search by Name'
                     className='bg-transparent outline-none w-[560px] ml-2'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>
@@ -182,7 +197,7 @@ const Orders = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading} allOrders={allOrders} />}
+        {activeTab === "All" && <All loading={loading} allOrders={filteredOrders} />}
         {activeTab === "Completed" && <Completed loading={loading} allOrders={allOrders} />}
         {activeTab === "Cancelled" && <Cancelled loading={loading} allOrders={allOrders} />}
         {activeTab === "Pending" && <Pending loading={loading} allOrders={allOrders} />}

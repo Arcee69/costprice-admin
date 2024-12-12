@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { FiHome, FiUploadCloud } from 'react-icons/fi'
+import * as XLSX from 'xlsx'
 
 import { api } from '../../services/api';
 import { appUrls } from '../../services/urls';
@@ -47,6 +48,16 @@ const Dashboard = () => {
     getSummary()
   }, [])
 
+  console.log(summary, "summary")
+
+  const exportExcel = () => {
+    // Wrap the summary object in an array so it can be processed by json_to_sheet
+    const worksheet = XLSX.utils.json_to_sheet([summary]);  // Wrap summary in an array
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Summary');
+    XLSX.writeFile(workbook, `summary_${Date.now()}.xlsx`);
+  };
+
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
       <div className='flex items-center'>
@@ -59,6 +70,7 @@ const Dashboard = () => {
          
           <button
             className='w-[120px] p-2 h-[48px] bg-[#2B3674] flex items-center gap-[21px] rounded-lg'
+            onClick={exportExcel}
           >
             <FiUploadCloud className='w-[18px] h-[15px] text-[#fff]' />
             <p className='text-[#fff] font-barlow font-medium'>Export</p>

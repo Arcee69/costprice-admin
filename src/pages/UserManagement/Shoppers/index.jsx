@@ -5,6 +5,7 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import { Listbox, Transition } from '@headlessui/react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from "xlsx"
 
 import { api } from '../../../services/api';
 import { appUrls } from '../../../services/urls';
@@ -20,8 +21,6 @@ import Disabled from './components/Disabled';
 import Active from './components/Active';
 
 
-
-
 const terms = [
   { name: 'Name'},
   { name: 'Category' },
@@ -32,6 +31,7 @@ const Shoppers = () => {
   const [activeTab, setActiveTab] = useState("All")
   const [allShoppers, setAllShoppers] = useState([])
   const [selected, setSelected] = useState(terms[0])
+  const [search, setSearch] = useState("")
 
   const navigate = useNavigate()
 
@@ -58,6 +58,25 @@ const Shoppers = () => {
     getAllPrincipals()
   }, [])
 
+  const filteredShoppers = allShoppers?.filter((item) => {
+    const matchesSearch = 
+    item.name.toLowerCase().includes(search.toLowerCase() || "")
+    
+    // const matchesStatus = 
+    //     selected.name === "" || 
+    //     item.type === selected.name;
+    
+    return matchesSearch ;  //&& matchesStatus
+  })
+
+  
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(allShoppers); 
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Shoppers');
+    XLSX.writeFile(workbook, `shoppers_${Date.now()}.xlsx`);
+  };
+
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -74,6 +93,7 @@ const Shoppers = () => {
         <div className='flex gap-4 items-center'>
           <button
             className='w-[120px] p-2 h-[48px] bg-[#2B3674] flex items-center gap-[21px] rounded-lg'
+            onClick={exportExcel}
           >
             <FiUploadCloud className='w-[18px] h-[15px] text-[#fff]' />
             <p className='text-[#fff] font-barlow font-medium'>Export</p>
@@ -205,6 +225,8 @@ const Shoppers = () => {
                     type='text'
                     placeholder='Search by Name'
                     className='bg-transparent outline-none w-[560px] ml-2'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>
@@ -218,7 +240,7 @@ const Shoppers = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading} allShoppers={allShoppers} />}
+        {activeTab === "All" && <All loading={loading} allShoppers={filteredShoppers} />}
         {activeTab === "Active" && <Active loading={loading} />}
         {activeTab === "Disabled" && <Disabled loading={loading} />} 
 

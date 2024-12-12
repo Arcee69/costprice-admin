@@ -5,6 +5,7 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import { Listbox, Transition } from '@headlessui/react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from "xlsx"
 
 import { api } from '../../../services/api';
 import { appUrls } from '../../../services/urls';
@@ -18,6 +19,7 @@ import Wallet from "../../../assets/svg/wallet.svg"
 import All from './components/All';
 import Disabled from './components/Disabled';
 import Pending from './components/Pending';
+import Active from '../Admin/components/Active';
 
 
 
@@ -58,6 +60,23 @@ const Principals = () => {
     getAllPrincipals()
   }, [])
 
+  const filteredPrincipals = allPrincipals?.filter((item) => {
+    const matchesSearch = 
+    item.name.toLowerCase().includes(search.toLowerCase() || "")
+    
+    // const matchesStatus = 
+    //     selected.name === "" || 
+    //     item.type === selected.name;
+    
+    return matchesSearch ;  //&& matchesStatus
+  })
+
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(allPrincipals); 
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Principals');
+    XLSX.writeFile(workbook, `principals_${Date.now()}.xlsx`);
+  };
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -74,6 +93,7 @@ const Principals = () => {
         <div className='flex gap-4 items-center'>
           <button
             className='w-[120px] p-2 h-[48px] border border-[#2B3674] flex items-center gap-[21px] rounded-lg'
+            onClick={exportExcel}
           >
             <FiUploadCloud className='w-[18px] h-[15px] text-[#2B3674]' />
             <p className='text-[#2B3674] font-barlow font-medium'>Export</p>
@@ -227,7 +247,7 @@ const Principals = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading} allPrincipals={allPrincipals} />}
+        {activeTab === "All" && <All loading={loading} allPrincipals={filteredPrincipals} />}
         {activeTab === "Active" && <Active loading={loading} />}
         {activeTab === "Disabled" && <Disabled loading={loading} />} 
 

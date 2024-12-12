@@ -74,10 +74,10 @@ const All = ({ data }) => {
                           <p className='text-sm font-semibold font-barlow text-dark-100 text-left'>{`${item?.id?.substring(0, 8)}`}</p> 
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.customer}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.user?.name}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.type}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.user?.type}</p>
                       </td>
                       <td className='h-[70px] px-4'>
                           <p className='text-sm font-barlow text-dark-100 text-left'>{item?.amount}</p>
@@ -86,7 +86,7 @@ const All = ({ data }) => {
                           <p className='text-sm font-barlow text-dark-100 text-left'>{item?.plan}</p>
                       </td>
                       <td className='h-[70px] px-4'>
-                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.date}</p>
+                          <p className='text-sm font-barlow text-dark-100 text-left'>{item?.billing_date}</p>
                       </td>
                       <td className='h-[70px] px-4'>
                           <div className={`rounded-lg h-8 flex justify-center items-center ${item?.status === 'Completed' && 'w-[99px]  bg-[#D1FFE3]'} ${item?.status === 'Pending' && ' w-[99px] bg-[#FFC60029]'} ${item?.status === 'Cancelled' && ' w-[99px] bg-[#FFF1F2]'}`}>

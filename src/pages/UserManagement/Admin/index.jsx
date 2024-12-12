@@ -4,6 +4,7 @@ import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { HiOutlinePlusSm } from "react-icons/hi";
 import { Listbox, Transition } from '@headlessui/react';
 import { IoIosArrowDown } from 'react-icons/io';
+import * as XLSX from "xlsx"
 
 import { api } from '../../../services/api';
 import { appUrls } from '../../../services/urls';
@@ -19,8 +20,9 @@ import Disabled from './components/Disabled';
 
 
 const terms = [
-  { name: 'Name'},
-  { name: 'Category' },
+  { name: ''},
+  { name: 'admin'},
+  { name: 'super_admin' },
 ]
 
 const Admin = () => {
@@ -28,6 +30,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("All")
   const [allAdmins, setAllAdmins] = useState([])
   const [selected, setSelected] = useState(terms[0])
+  const [search, setSearch] = useState("")
 
 
   const handleChangeTab = (value) => {
@@ -52,6 +55,27 @@ const Admin = () => {
     getAllAdmins()
   }, [])
 
+  
+  const filteredAdmins = allAdmins?.filter((item) => {
+    const matchesSearch = 
+    item?.name.toLowerCase().includes(search.toLowerCase() || "")
+    
+    const matchesStatus = 
+        selected.name === "" || 
+        item.type === selected.name;
+    
+    return matchesSearch && matchesStatus;
+  })
+
+
+  const exportExcel = () => {
+    // Wrap the summary object in an array so it can be processed by json_to_sheet
+    const worksheet = XLSX.utils.json_to_sheet(allAdmins);  // Wrap summary in an array
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Admins');
+    XLSX.writeFile(workbook, `admins_${Date.now()}.xlsx`);
+  };
+
 
   return (
     <div className='py-5 px-14 flex flex-col bg-[#F4F7FE]'>
@@ -68,6 +92,7 @@ const Admin = () => {
         <div className='flex gap-4 items-center'>
           <button
             className='w-[120px] p-2 h-[48px] border border-[#2B3674] flex items-center gap-[21px] rounded-lg'
+            onClick={exportExcel}
           >
             <FiUploadCloud className='w-[18px] h-[15px] text-[#2B3674]' />
             <p className='text-[#2B3674] font-barlow font-medium'>Export</p>
@@ -139,7 +164,7 @@ const Admin = () => {
                 <Listbox value={selected} onChange={setSelected}>
                     <div className="relative">
                         <Listbox.Button className="relative w-[145px] rounded-l-2xl cursor-default flex items-center gap-2 py-2 pl-3 pr-10 text-left outline-none sm:text-sm bg-[#E0E3F1]">
-                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name}</span>
+                            <span className="block truncate w-full font-barlow text-[#2B3674]">{selected?.name || "Select"}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                 <IoIosArrowDown
                                     className="h-5 w-5 text-[#2B3674]"
@@ -185,6 +210,8 @@ const Admin = () => {
                     type='text'
                     placeholder='Search by Name'
                     className='bg-transparent outline-none w-[560px] ml-2'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <img src={SearchSmall} alt='SearchSmall'/>
             </div>
@@ -198,7 +225,7 @@ const Admin = () => {
             </div>
         </div>
 
-        {activeTab === "All" && <All loading={loading} allAdmins={allAdmins} />}
+        {activeTab === "All" && <All loading={loading} allAdmins={filteredAdmins} />}
         {activeTab === "Active" && <Active loading={loading} />}
         {activeTab === "Inactive" && <Inactive loading={loading} />}
         {activeTab === "Disabled" && <Disabled loading={loading} />}
